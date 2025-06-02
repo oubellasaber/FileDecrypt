@@ -1,8 +1,8 @@
 ﻿using FileDecrypt.Core;
-using FileDecrypt.Core.Services;
+using FileDecrypt.Core.Decryptors;
+using FileDecrypt.Core.Extractors;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Net.Http;
 
 var host = Host.CreateApplicationBuilder(args);
 
@@ -26,15 +26,14 @@ host.Services.AddHttpClient<LinkResolver>()
 
 host.Services.AddTransient<RequiredHeadersExtractor>();
 host.Services.AddTransient<ContainerMetadataExtractor>();
-host.Services.AddTransient<LinkEntryExtractor>();
-host.Services.AddTransient<FileCryptContainerBuilder>();
+host.Services.AddTransient<LinkEntryMetadataExtractor>();
+host.Services.AddTransient<CnlPayloadExtractor>();
+host.Services.AddTransient<CnlPayloadDecryptor>();
+host.Services.AddTransient<DlcPayloadExtractor>();
+host.Services.AddTransient<DlcPayloadDecryptor>();
+host.Services.AddTransient<FileCryptClient>();
 
 // host.Services.AddLogging(config => config.AddConsole());
 
 using var app = host.Build();
 
-// Resolve and run
-var builder = app.Services.GetRequiredService<FileCryptContainerBuilder>();
-var container = await builder.BuildContainerAsync(new Uri("https://filecrypt.co/Container/B3CFD96DB8.html"));
-
-Console.WriteLine($"Built container: {container.Title}");

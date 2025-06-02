@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Headers;
 
-namespace FileDecrypt.Core.Services;
+namespace FileDecrypt.Core.Extractors;
 
 public record HttpHeader(string HeaderName, string Value)
 {

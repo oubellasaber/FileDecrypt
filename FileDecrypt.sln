@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35431.28
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileDecrypt.Core", "FileDecrypt.Core\FileDecrypt.Core.csproj", "{D311F2A5-88ED-4EE6-9888-3549CFBFA13C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileDecrypt.Console", "FileDecrypt.Console\FileDecrypt.Console.csproj", "{4777B878-A95E-4EB6-BF9C-7D0E20ADA658}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileDecrypt.Console", "FileDecrypt.Console\FileDecrypt.Console.csproj", "{4777B878-A95E-4EB6-BF9C-7D0E20ADA658}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C40FA4B7-6332-4CD2-A588-1EA444F918F0}"
 	ProjectSection(SolutionItems) = preProject

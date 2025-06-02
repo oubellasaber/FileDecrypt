@@ -1,31 +1,18 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
-namespace FileDecrypt.Core.Entites.EncryptedContainers;
+namespace FileDecrypt.Core.Decryptors;
 
-public record CnlPayload
+public class CnlPayloadDecryptor
 {
-    private readonly string KeyHex;
-    private readonly string EncryptedBase64;
-    private readonly string? Password = null;
-
-    public CnlPayload(string keyHex, string encryptedBase64, string? password = null)
-    {
-        ArgumentNullException.ThrowIfNull(keyHex);
-        ArgumentNullException.ThrowIfNull(encryptedBase64);
-
-        KeyHex = keyHex;
-        EncryptedBase64 = encryptedBase64;
-        Password = password;
-    }
-
-    public IReadOnlyList<string> Decrypt()
+    public IReadOnlyList<string> Decrypt(CnlPayload cnlPayload)
     {
         // Convert hex key to byte array
-        byte[] key = ConvertHexStringToByteArray(KeyHex);
+        byte[] key = ConvertHexStringToByteArray(cnlPayload.KeyHex);
 
         // Convert base64 to byte array
-        byte[] cipherText = Convert.FromBase64String(EncryptedBase64);
+        byte[] cipherText = Convert.FromBase64String(cnlPayload.EncryptedBase64);
 
         // Decrypt using AES CBC with no padding
         string plainText = Decrypt(cipherText, key);
@@ -38,7 +25,7 @@ public record CnlPayload
         return links;
     }
 
-    static byte[] ConvertHexStringToByteArray(string hex)
+    private static byte[] ConvertHexStringToByteArray(string hex)
     {
         byte[] bytes = new byte[hex.Length / 2];
         for (int i = 0; i < hex.Length; i += 2)
@@ -46,7 +33,7 @@ public record CnlPayload
         return bytes;
     }
 
-    static string Decrypt(byte[] cipherText, byte[] key)
+    private static string Decrypt(byte[] cipherText, byte[] key)
     {
         using Aes aes = Aes.Create();
         aes.Mode = CipherMode.CBC;
@@ -68,7 +55,7 @@ public record CnlPayload
         }
     }
 
-    static string ExtractLinks(string raw)
+    private static string ExtractLinks(string raw)
     {
         // Find first http and normalize whitespace
         int start = raw.IndexOf("http", StringComparison.OrdinalIgnoreCase);
@@ -77,5 +64,24 @@ public record CnlPayload
             raw = raw.Substring(start);
         }
         return raw.Trim();
+    }
+}
+
+public record CnlPayload
+{
+    public string KeyHex { get; }
+    public string EncryptedBase64 { get; }
+    public string? Password { get; }
+
+    public CnlPayload(string encryptedBase64, string keyHex, string? password = null)
+    {
+        if (string.IsNullOrWhiteSpace(keyHex) || !Regex.IsMatch(keyHex, @"^[0-9a-fA-F]+$"))
+            throw new ArgumentException("Key must be a valid hexadecimal string.", nameof(keyHex));
+
+        ArgumentNullException.ThrowIfNull(encryptedBase64);
+
+        KeyHex = keyHex;
+        EncryptedBase64 = encryptedBase64;
+        Password = password;
     }
 }

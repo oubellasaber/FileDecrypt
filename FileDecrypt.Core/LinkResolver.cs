@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Options;
+﻿using FileDecrypt.Core.Extractors;
+using FileDecrypt.Core.Options;
+using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 
-namespace FileDecrypt.Core.Services;
+namespace FileDecrypt.Core;
 
 public class LinkResolver
 {
