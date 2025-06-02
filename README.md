@@ -4,7 +4,7 @@ A robust C# library and toolset for extracting and resolving file container meta
 
 ## Overview
 
-This project enables you to programmatically fetch, parse, and fully resolve download links from FileCrypt container pages. It extracts detailed metadata such as titles, status, last checked date, and a list of individual file entries with resolved URLs.
+This project enables you to programmatically fetch, parse, and fully resolve download links from FileCrypt container pages. It extracts detailed metadata such as titles, status, last checked date, dlc url, cnl url and a list of individual file entries with resolved URLs.
 
 Built with modular components for:
 - HTTP communication using `HttpClient` with custom headers and handlers
@@ -14,7 +14,7 @@ Built with modular components for:
 ## Features
 
 - Fetch container page HTML and parse general metadata  
-- Extract all link entries including file names, sizes, status and download link
+- Extract all link entries—including file names, sizes, status, and download URLs—using the fastest available method: CNL, then DLC, and finally manual link resolution as a fallback.
 
 ## Getting Started
 
@@ -26,15 +26,8 @@ Built with modular components for:
 ### Usage Example
 
 ```csharp
-var builder = new FileCryptContainerBuilder(
-    httpClient, 
-    requiredHeadersExtractor, 
-    containerMetadataExtractor, 
-    linkEntryExtractor, 
-    linkResolver);
+var containerUrl = new Uri("https://filecrypt.co/Container/B7582E4F52.html");
+var container = await filecryptClient.GetContainerAsync(containerUrl);
 
-Uri containerUrl = new Uri("https://filecrypt.co/Container/id_here_");
-FileCryptContainer container = await builder.BuildContainerAsync(containerUrl);
-
-Console.WriteLine($"Container Title: {container.Title}");
-Console.WriteLine($"Total Links: {container.LinkEntries.Count}");
+Console.WriteLine(container.ToString());
+```
